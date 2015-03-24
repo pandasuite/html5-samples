@@ -1,0 +1,12 @@
+{
+	"version": "1.0.0",
+	"main": "index.html",
+	"markers": [
+		"thunderstorm",
+		"drizzle",
+		"rain",
+		"snow",
+		"clouds",
+		"other"
+	]
+}
