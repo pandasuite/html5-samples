@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/style.css">
+
+		<script src="./panda-bridge-1.0.0.min.js"></script>
+		<script type="text/javascript">
+
+			function validate() {
+				var username = document.getElementById("username").value;
+				var password = document.getElementById("password").value;
+				if (username == "admin" && password == "admin") {
+					PandaBridge.send("success");
+					return false;
+				}
+				else {
+					PandaBridge.send("failure");
+					return false;
+				}
+			}
+
+			PandaBridge.init(function() {
+			});
+
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<h2>Javascript Login Form Validation</h2>
+			<form id="form_id" method="post" name="myform">
+				<label>User Name :</label>
+				<input type="text" name="username" id="username"/>
+				<label>Password :</label>
+				<input type="password" name="password" id="password"/>
+				<input type="button" value="Login" id="submit" onclick="validate()"/>
+			</form>
+		</div>
+	</body>
+</html>
