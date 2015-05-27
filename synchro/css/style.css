@@ -1,0 +1,10 @@
+body {
+	background-color: #555;
+	margin: 0;
+}
+
+#container {
+	background-color: black;
+	width: 1000px;
+	height: 400px;
+}
