@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="./panda-bridge-1.0.0.min.js"></script>
+	<script type="text/javascript">
+
+		function getSwitch() {
+			var switched = localStorage.getItem('switch');
+			PandaBridge.send(switched == "true" ? 'ON' : 'OFF');
+		}
+
+		PandaBridge.init(function() {
+			PandaBridge.listen(function(event) {
+				if (event == 'getSwitch') {
+					getSwitch();
+				} else {
+					localStorage.setItem('switch', event == 'ON')
+				}
+			});
+			getSwitch();
+		});
+
+	</script>
+</head>
+<body>
+
+</body>
+</html>
