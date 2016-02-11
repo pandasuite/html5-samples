@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geolocation</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <script src='js/map.js'></script>
+    <script src="./panda-bridge-2.0.2.min.js"></script>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map = null;
+      var marker = null;
+      var initialLocation;
+
+      var properties = null;
+      var markers = null;
+
+      PandaBridge.init(function() {
+
+        PandaBridge.onLoad(function(pandaData) {
+          properties = pandaData.properties;
+          markers = pandaData.markers;
+
+          if (PandaBridge.isStudio) {
+            var script = document.createElement("script");
+            script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?callback=initMap" +
+              (properties.apiKey ? "&key=" + properties.apiKey : ""));
+            document.getElementsByTagName("head")[0].appendChild(script);
+          } else {
+            initGeolocation();
+          }
+        });
+
+        PandaBridge.getSnapshotData(function() {
+          if (marker != null) {
+            return { lat: marker.getPosition().lat(), lng: marker.getPosition().lng() }
+          }
+          return null;
+        });
+
+        PandaBridge.setSnapshotData(function(pandaData) {
+          if (map != null) {
+            addMarker(pandaData.data);
+          } else {
+            initialLocation = pandaData.data;
+          }
+        });
+
+      });
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: { lat: 48.864051319607476, lng: 2.3559504747390747 },
+          zoom: 18
+        });
+
+        if (initialLocation) {
+          addMarker(initialLocation);
+        }
+
+        map.addListener('click', function(event) {
+          addMarker(event.latLng);
+        });
+
+        initGeolocation();
+      }
+
+      function initGeolocation() {
+        if (navigator.geolocation) {
+
+          navigator.geolocation.watchPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+
+            markers.forEach(function(m) {
+              if (getHaversineDistance(pos, m) < properties.detectionDistance) {
+                PandaBridge.send("triggerMarker", m.id);
+              }
+            });
+          }, function(e) {
+            initGeolocation();
+          }, { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 });
+        } else {
+          handleLocationError(false);
+        }
+      }
+
+      function addMarker(location) {
+        if (marker) {
+          marker.setMap(null);
+        }
+        marker = new google.maps.Marker({
+          position: location,
+          map: map
+        });
+        map.setCenter(location);
+      }
+
+      function handleLocationError(browserHasGeolocation) {
+        PandaBridge.send('locationError');
+      }
+
+      function getHaversineDistance(p1, p2) {
+        var R = 6371
+        var dLat  = toRadian(p2.lat - p1.lat)
+        var dLong = toRadian(p2.lng - p1.lng)
+
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(toRadian(p1.lat)) * Math.cos(toRadian(p2.lat)) * Math.sin(dLong/2) * Math.sin(dLong/2)
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+        var d = R * c
+
+        return d * 1000;
+      }
+
+      function toRadian(x) {
+        return x * Math.PI / 180
+      }
+
+    </script>
+  </body>
+</html>

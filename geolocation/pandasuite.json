@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "system": {
+    "events": [
+      {
+        "id": "triggerMarker",
+        "name": "GPS coordinates",
+        "locale_name": {
+          "fr_FR": "Coordonnées GPS"
+        }
+      }
+    ]
+  },
+
+  "events": [
+    {
+      "id": "locationError",
+      "name": "Geolocation Error",
+      "locale_name": {
+        "fr_FR": "Erreur de géolocalisation"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "apiKey",
+      "name": "Google Maps API key",
+      "type": "String",
+      "activable": false
+    },
+    {
+      "id": "detectionDistance",
+      "name": "Detection Distance (meters)",
+      "locale_name": {
+        "fr_FR": "Distance de détection (mètres)"
+      },
+      "type": "Float",
+      "value": 20
+    }
+  ],
+
+  "markers": [
+    {
+      "id": "home",
+      "name": "Panda Home",
+      "data": {
+        "lat": 48.864051319607476,
+        "lng": 2.3559504747390747
+      },
+      "default": true
+    }
+  ]
+
+}
