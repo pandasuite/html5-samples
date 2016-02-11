@@ -1,0 +1,63 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "imageStored",
+      "name": "Image stored",
+      "locale_name": {
+        "fr_FR": "Image stockée"
+      }
+    },
+    {
+      "id": "imageFailed",
+      "name": "Image storage failed",
+      "locale_name": {
+        "fr_FR": "Stockage image échoué"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "uniqueId",
+      "name": "Unique identifier",
+      "locale_name": {
+        "fr_FR": "Identifiant unique"
+      },
+      "type": "String",
+      "value": "My face"
+    },
+    {
+      "id": "isCapture",
+      "name": "Camera capture",
+      "locale_name": {
+        "fr_FR": "Capture appareil photo"
+      },
+      "type": "Boolean",
+      "value": true
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "refreshImage",
+      "name": "Refresh image",
+      "locale_name": {
+        "fr_FR": "Actualiser image"
+      }
+    },
+    {
+      "id": "clearStorage",
+      "name": "Clear storage",
+      "locale_name": {
+        "fr_FR": "Effacer le stockage"
+      },
+      "params": [
+        { "id": "global", "name": "Global storage", "locale_name": {"fr_FR": "Stockage global"}, "type": "Boolean", "value": false }
+      ]
+    }
+  ]
+
+}
