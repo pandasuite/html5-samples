@@ -5,12 +5,13 @@
 		<title></title>
 		<link rel="stylesheet" href="css/style.css">
 
-		<script src="./panda-bridge-1.0.0.min.js"></script>
+		<script src="./panda-bridge-2.0.2.min.js"></script>
 		<script type="text/javascript">
 
 			function validate() {
 				var username = document.getElementById("username").value;
 				var password = document.getElementById("password").value;
+
 				if (username == "admin" && password == "admin") {
 					PandaBridge.send("success");
 					return false;
@@ -20,9 +21,6 @@
 					return false;
 				}
 			}
-
-			PandaBridge.init(function() {
-			});
 
 		</script>
 	</head>

@@ -1,12 +1,68 @@
 {
-	"version": "1.0.0",
-	"main": "index.html",
-	"markers": [
-		"thunderstorm",
-		"drizzle",
-		"rain",
-		"snow",
-		"clouds",
-		"other"
-	]
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "thunderstorm",
+      "name": "Thunderstorm",
+      "locale_name": {
+        "fr_FR": "Orage"
+      }
+    },
+    {
+      "id": "drizzle",
+      "name": "Drizzle",
+      "locale_name": {
+        "fr_FR": "Bruine"
+      }
+    },
+    {
+      "id": "rain",
+      "name": "Rain",
+      "locale_name": {
+        "fr_FR": "Pluie"
+      }
+    },
+    {
+      "id": "snow",
+      "name": "Snow",
+      "locale_name": {
+        "fr_FR": "Neige"
+      }
+    },
+    {
+      "id": "clear",
+      "name": "Clear",
+      "locale_name": {
+        "fr_FR": "Clair"
+      }
+    },
+    {
+      "id": "clouds",
+      "name": "Clouds",
+      "locale_name": {
+        "fr_FR": "Nuages"
+      }
+    },
+    {
+      "id": "other",
+      "name": "Other",
+      "locale_name": {
+        "fr_FR": "Autre"
+      }
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "getWeather",
+      "name": "Get weather",
+      "locale_name": {
+        "fr_FR": "Obtenir la météo"
+      }
+    }
+  ]
+
 }
+

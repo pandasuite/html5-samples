@@ -1,8 +1,22 @@
 {
-	"version": "1.0.0",
-	"main": "index.html",
-	"markers": [
-		"success",
-		"failure"
-	]
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "success",
+      "name": "Form validation success",
+      "locale_name": {
+        "fr_FR": "Succès validation formulaire"
+      }
+    },
+    {
+      "id": "failure",
+      "name": "Form validation failure",
+      "locale_name": {
+        "fr_FR": "Échec validation formulaire"
+      }
+    }
+  ]
+
 }

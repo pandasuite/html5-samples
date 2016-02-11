@@ -8,13 +8,13 @@
 		<script src='js/kinetic-v4.4.0.min.js'></script>
 		<script src='js/TweenMax.min.js'></script>
 
-		<script src="./panda-bridge-1.0.0.min.js"></script>
+		<script src="./panda-bridge-2.0.2.min.js"></script>
 		<script type="text/javascript">
 
 			PandaBridge.init(function() {
-				PandaBridge.listen('synchronize', function(args) {
-					TweenLite.to(window.tween, 0.1, { progress: args[0] / 100 })
-				});
+  			PandaBridge.synchronize('animationProgress', function(percent) {
+					TweenLite.to(window.tween, 0.1, { progress: percent / 100 })
+  			});
 			});
 
 		</script>

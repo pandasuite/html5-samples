@@ -2,23 +2,32 @@
 <html>
 <head>
 	<title></title>
-	<script src="./panda-bridge-1.0.0.min.js"></script>
+	<script src="./panda-bridge-2.0.2.min.js"></script>
 	<script type="text/javascript">
 
-		function getSwitch() {
+		function getSwitchState() {
 			var switched = localStorage.getItem('switch');
 			PandaBridge.send(switched == "true" ? 'ON' : 'OFF');
 		}
 
 		PandaBridge.init(function() {
-			PandaBridge.listen(function(event) {
-				if (event == 'getSwitch') {
-					getSwitch();
-				} else {
-					localStorage.setItem('switch', event == 'ON')
-				}
+
+      PandaBridge.onLoad(function(pandaData) {
+      	getSwitchState();
 			});
-			getSwitch();
+
+			PandaBridge.listen('changeToON', function(event) {
+				localStorage.setItem('switch', true);
+			});
+
+			PandaBridge.listen('changeToOFF', function(event) {
+				localStorage.setItem('switch', false);
+			});
+
+			PandaBridge.listen('getSwitchState', function(event) {
+				getSwitchState();
+			});
+
 		});
 
 	</script>

@@ -1,9 +1,46 @@
 {
-	"version": "1.0.0",
-	"main": "index.html",
-	"markers": [
-		"getSwitch",
-		"ON",
-		"OFF"
-	]
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "ON",
+      "name": "Switch changed ON",
+      "locale_name": {
+        "fr_FR": "Interrupteur changé ON"
+      }
+    },
+    {
+      "id": "OFF",
+      "name": "Switch changed OFF",
+      "locale_name": {
+        "fr_FR": "Interrupteur changé OFF"
+      }
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "changeToON",
+      "name": "Change switch ON",
+      "locale_name": {
+        "fr_FR": "Changer interrupteur ON"
+      }
+    },
+    {
+      "id": "changeToOFF",
+      "name": "Change switch OFF",
+      "locale_name": {
+        "fr_FR": "Changer interrupteur OFF"
+      }
+    },
+    {
+      "id": "getSwitchState",
+      "name": "Get switch state",
+      "locale_name": {
+        "fr_FR": "Obtenir l'état interrupteur"
+      }
+    }
+  ]
+
 }

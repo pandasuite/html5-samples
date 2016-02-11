@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "synchronization": [
+    {
+      "id": "animationProgress",
+      "name": "Synchronize animation progression",
+      "locale_name": {
+        "fr_FR": "Synchroniser progression animation"
+      }
+    }
+  ]
+
+}
