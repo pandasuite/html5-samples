@@ -21,15 +21,6 @@
 
   "properties": [
     {
-      "id": "uniqueId",
-      "name": "Unique identifier",
-      "locale_name": {
-        "fr_FR": "Identifiant unique"
-      },
-      "type": "String",
-      "value": "My face"
-    },
-    {
       "id": "isCapture",
       "name": "Camera capture",
       "locale_name": {
@@ -53,10 +44,7 @@
       "name": "Clear storage",
       "locale_name": {
         "fr_FR": "Effacer le stockage"
-      },
-      "params": [
-        { "id": "global", "name": "Global storage", "locale_name": {"fr_FR": "Stockage global"}, "type": "Boolean", "value": false }
-      ]
+      }
     }
   ]
 

@@ -41,10 +41,10 @@
           document.getElementById('image').style.display = 'none';
           listenForCameraChange('capture', function (image) {
             try {
-              localStorage.setItem(properties.uniqueId, image);
+              localStorage.setItem('my_awesome_image', image);
               PandaBridge.send('imageStored');
             } catch (e) {
-              PandaBridge.send('imageStored');
+              PandaBridge.send('imageFailed');
             }
           });
         } else {
@@ -54,7 +54,7 @@
       });
 
       PandaBridge.listen('refreshImage', function(event) {
-        var imageData = localStorage.getItem(properties.uniqueId);
+        var imageData = localStorage.getItem('my_awesome_image');
         if (imageData) {
           var image = document.getElementById('image');
           image.onload = function () {
@@ -71,11 +71,7 @@
       });
 
       PandaBridge.listen('clearStorage', function(args) {
-        if ((args[0] || {}).global) {
-          localStorage.clear();
-        } else {
-          localStorage.removeItem(properties.uniqueId);
-        }
+        localStorage.removeItem('my_awesome_image');
       });
 
     });
