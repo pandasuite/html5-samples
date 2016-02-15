@@ -19,6 +19,18 @@
     }
   ],
 
+  "properties": [
+    {
+      "id": "uniqueId",
+      "name": "Unique identifier",
+      "locale_name": {
+        "fr_FR": "Identifiant unique"
+      },
+      "type": "String",
+      "value": "my_switch"
+    }
+  ],
+
   "actions": [
     {
       "id": "changeToON",

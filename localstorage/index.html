@@ -5,23 +5,28 @@
 	<script src="./panda-bridge-2.0.2.min.js"></script>
 	<script type="text/javascript">
 
+		var storageKey = null;
+
 		function getSwitchState() {
-			var switched = localStorage.getItem('switch');
+			var switched = localStorage.getItem(storageKey);
 			PandaBridge.send(switched == "true" ? 'ON' : 'OFF');
 		}
 
 		PandaBridge.init(function() {
 
       PandaBridge.onLoad(function(pandaData) {
-      	getSwitchState();
+      	storageKey = pandaData.properties.uniqueId;
+	      getSwitchState();
 			});
 
 			PandaBridge.listen('changeToON', function(event) {
-				localStorage.setItem('switch', true);
+				localStorage.setItem(storageKey, true);
+				getSwitchState();
 			});
 
 			PandaBridge.listen('changeToOFF', function(event) {
-				localStorage.setItem('switch', false);
+				localStorage.setItem(storageKey, false);
+				getSwitchState();
 			});
 
 			PandaBridge.listen('getSwitchState', function(event) {
