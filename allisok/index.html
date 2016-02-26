@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="./panda-bridge-2.0.2.min.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    var memoryStorage = {};
+
+    function storeMarkerEvent(id) {
+      if (properties.isLocalStorage) {
+        localStorage.setItem(id, true);
+      } else {
+        memoryStorage[id] = true;
+      }
+    }
+
+    function getMarkerEvent(id) {
+      if (properties.isLocalStorage) {
+        return localStorage.getItem(id) == "true";
+      } else {
+        return memoryStorage[id] == true;
+      }
+    }
+
+    function checkIfAllIsOk(sendIndividualState) {
+      var allIsOk = true;
+
+      if (markers != null) {
+        markers.forEach(function(marker) {
+          if (!getMarkerEvent(marker.id)) {
+            allIsOk = false;
+          } else if (sendIndividualState) {
+            PandaBridge.send(marker.id);
+          }
+        });
+      }
+      if (allIsOk) {
+        PandaBridge.send('allIsOk');
+      }
+    }
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        checkIfAllIsOk(true);
+      });
+
+      PandaBridge.getSnapshotData(function() {
+        return { id: guid() };
+      });
+
+      PandaBridge.setSnapshotData(function(pandaData) {
+        if (!PandaBridge.isStudio) {
+          storeMarkerEvent(pandaData.data.id);
+          PandaBridge.send(pandaData.data.id);
+          checkIfAllIsOk();
+        }
+      });
+
+    });
+
+    function guid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + s4() + s4();
+    }
+
+  </script>
+</head>
+<body>
+
+</body>
+</html>
