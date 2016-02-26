@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="css/style.css">
+  <script src='js/hammer.min.js'></script>
+  <script src="./panda-bridge-2.0.2.min.js"></script>
+  <script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+
+      function sendSynchronizationStatus(ev, animated) {
+        var pageX = ev.pageX || (ev.pointers && ev.pointers[0] && ev.pointers[0].pageX) ||
+          (ev.touches && ev.touches[0] && ev.touches[0].pageX) ||
+          (ev.changedTouches && ev.changedTouches[0] && ev.changedTouches[0].pageX);
+        var pageY = ev.pageY || (ev.pointers && ev.pointers[0] && ev.pointers[0].pageY) ||
+          (ev.touches && ev.touches[0] && ev.touches[0].pageY) ||
+          (ev.changedTouches && ev.changedTouches[0] && ev.changedTouches[0].pageY);
+
+        if (pageX && pageY) {
+          PandaBridge.send('synchronize', [pageX * 100 / ev.target.clientWidth, 'x', animated]);
+          PandaBridge.send('synchronize', [pageY * 100 / ev.target.clientHeight, 'y', animated]);
+        } else if (ev.srcEvent) {
+          sendSynchronizationStatus(ev.srcEvent, animated);
+        }
+      }
+
+      var hammertime = new Hammer(document.getElementById('container'), { domEvents: false });
+      hammertime.get('pan').set({ direction: Hammer.DIRECTION_ALL, threshold: 0 });
+
+      hammertime.on('pan', function(ev) {
+        sendSynchronizationStatus(ev, true);
+      });
+
+      var isTouchSupported = 'ontouchstart' in window;
+      var startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
+      var endEvent = isTouchSupported ? 'touchend' : 'mouseup';
+
+      var container = document.getElementById('container');
+      container.addEventListener(startEvent, function(ev) {
+        PandaBridge.send('touchDown');
+        sendSynchronizationStatus(ev, false);
+      }, false);
+
+      container.addEventListener(endEvent, function(ev) {
+        sendSynchronizationStatus(ev, true);
+        PandaBridge.send('touchUp');
+      }, false);
+
+    });
+
+  </script>
+</head>
+<body>
+  <div id="container"></div>
+</body>
+</html>

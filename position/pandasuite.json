@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "touchDown",
+      "name": "Touch down",
+      "locale_name": {
+        "fr_FR": "Touche"
+      }
+    },
+    {
+      "id": "touchUp",
+      "name": "Touch up",
+      "locale_name": {
+        "fr_FR": "Relâche"
+      }
+    }
+  ],
+
+  "synchronization": [
+    {
+      "id": "x",
+      "name": "Synchronize x positions",
+      "locale_name": {
+        "fr_FR": "Synchroniser positions en x"
+      }
+    },
+    {
+      "id": "y",
+      "name": "Synchronize y positions",
+      "locale_name": {
+        "fr_FR": "Synchroniser positions en y"
+      }
+    }
+  ]
+
+}
