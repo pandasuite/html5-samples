@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Spin HTML Component for PandaSuite</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="./panda-bridge-2.0.3.min.js"></script>
+  <script src="js/TweenLite.min.js"></script>
+  <script src="js/utils/Draggable.min.js"></script>
+  <script src="js/plugins/CSSPlugin.min.js"></script>
+  <script src="js/plugins/ThrowPropsPlugin-0.9.1.min.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    var oldAngle = 0;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (document.readyState === 'complete') {
+          myInit();
+        } else {
+          document.addEventListener("DOMContentLoaded", myInit, false);
+        }
+      });
+
+      function myInit() {
+
+        var rotatedImage = PandaBridge.resolvePath('my_image.png', './knob.png');
+        document.getElementById('container').style.backgroundImage = 'url(' + rotatedImage + ')';
+
+        var draggableProperties = {
+          type: 'rotation',
+          throwProps: properties.throwProps,
+          throwResistance: properties.throwResistance,
+          edgeResistance: 0.85,
+          onThrowUpdate: function () {
+            onRotate(this.rotation);
+          },
+          onDragStart: function () {
+            PandaBridge.send('onDragStart');
+            PandaBridge.send('onRotationStart');
+          },
+          onDragEnd: function () {
+            PandaBridge.send('onDragEnd');
+          },
+          onThrowComplete: function () {
+            PandaBridge.send('onRotationEnd');
+          },
+          onDrag: function () {
+            onRotate(this.rotation);
+          },
+          snap: function (endValue) {
+            if (properties.rotationSnap) {
+              if (properties.isNearestSnap) {
+                return (Math.round(this.rotation / properties.rotationSnap) * properties.rotationSnap)
+                  + (properties.rotationSnap * ((endValue > this.rotation) ? 1 : -1));
+              }
+              return Math.round(endValue / properties.rotationSnap) * properties.rotationSnap;
+            }
+            return endValue;
+          }
+        };
+
+        if (isRotationBounds()) {
+          properties.minRotation = properties.minRotation || 0;
+          properties.maxRotation = properties.maxRotation || 360;
+
+          draggableProperties.bounds = {
+            minRotation: properties.minRotation,
+            maxRotation: properties.maxRotation
+          };
+        }
+        Draggable.create('#container', draggableProperties);
+      }
+
+      /* Markers */
+
+      PandaBridge.getSnapshotData(function() {
+        return { id: Draggable.get('#container').rotation };
+      });
+
+      PandaBridge.setSnapshotData(function(pandaData) {
+        rotate(pandaData.data.id, pandaData.params.duration || 0);
+      });
+
+      /* Actions */
+
+      PandaBridge.listen('rotateBy', function(args) {
+        var props = args[0] || {};
+
+        Draggable.get('#container').update();
+
+        var newAngle = Draggable.get('#container').rotation + props.angle;
+        if (isRotationBounds()) {
+          newAngle = Math.min(Math.max(properties.minRotation, newAngle), properties.maxRotation);
+        }
+        rotate(newAngle, props.duration);
+      });
+
+      PandaBridge.synchronize('synchroRotation', function(percent) {
+        var angle;
+
+        if (isRotationBounds()) {
+          angle = properties.minRotation + ((percent * (properties.maxRotation - properties.minRotation)) / 100);
+        } else {
+          angle = percent * 360 / 100;
+        }
+        rotate(angle, 0.1, true);
+      });
+
+      /* Private methods */
+
+      var tween;
+
+      function rotate(angle, duration, fromSynchro) {
+        var needToDispatchStart = true;
+
+        Draggable.get('#container').update();
+        if (tween && tween.isActive()) {
+          needToDispatchStart = false;
+        }
+        tween = TweenLite.to('#container', duration, {
+          rotation: angle,
+          onStart: function () {
+            if (needToDispatchStart) {
+              PandaBridge.send('onRotationStart');
+            }
+          },
+          onComplete: function () {
+            PandaBridge.send('onRotationEnd');
+          },
+          onUpdate: function () {
+            onRotate(this.target[0]._gsTransform.rotation, fromSynchro);
+          }
+        });
+      }
+
+      function onRotate(angle, fromSynchro) {
+
+        /* Markers */
+        if (markers) {
+          markers.forEach(function(marker) {
+            if ((marker.absolute && isValueInRange(marker.id, angle % 360, oldAngle % 360, 0, 360)) ||
+              (!marker.absolute && isValueInRange(marker.id, angle, oldAngle, 0, 360))) {
+              PandaBridge.send('triggerMarker', marker.id);
+            }
+          });
+        }
+
+        /* Synchronisation status */
+        if (!fromSynchro) {
+          var value = 0;
+
+          if (isRotationBounds()) {
+            value = (angle - properties.minRotation) * 100 / (properties.maxRotation - properties.minRotation);
+          } else {
+            value = Math.abs(angle % 360) * 100 / 360;
+          }
+          PandaBridge.send('synchronize', [value, 'synchroRotation', true]);
+        }
+
+        oldAngle = angle;
+      }
+
+      function isRotationBounds() {
+        return properties.minRotation || properties.maxRotation;
+      }
+
+      function isValueInRange(testValue, currentValue, oldValue, minBorder, maxBorder) {
+        var minvalue = Math.min(oldValue, currentValue);
+        var maxvalue = Math.max(oldValue, currentValue);
+
+        var isLooping = (Math.abs(oldValue - currentValue) > (maxBorder - minBorder) * 0.85) && oldValue != -1 && !isRotationBounds();
+        return ((isLooping && ((testValue > maxvalue && testValue <= maxBorder) ||
+            (testValue >= minBorder && testValue <= minvalue))) ||
+          (!isLooping && ((oldValue <= currentValue && (testValue > minvalue && testValue <= maxvalue)) ||
+            (oldValue > currentValue && (testValue >= minvalue && testValue < maxvalue)))));
+      }
+
+    });
+
+  </script>
+</head>
+<body>
+  <div id="container">
+  </div>
+</body>
+</html>

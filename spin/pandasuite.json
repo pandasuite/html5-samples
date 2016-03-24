@@ -1,0 +1,154 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "system": {
+    "autoSave": false,
+    "actions": [
+      {
+        "id": "toMarker",
+        "name": "Change Rotation",
+        "locale_name": {
+          "fr_FR": "Changer Rotation"
+        },
+        "params": [
+          { "id": "duration", "name": "Duration", "locale_name": {"fr_FR": "Durée"}, "type": "Float" }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "triggerMarker",
+        "name": "Rotation",
+        "locale_name": {
+          "fr_FR": "Rotation"
+        }
+      }
+    ],
+    "markers": [
+      {
+        "params": [
+          { "id": "absolute", "name": "absolute", "locale_name": {"fr_FR": "Absolue"}, "type": "Boolean" }
+        ]
+      }
+    ]
+  },
+
+  "events": [
+    {
+      "id": "onDragStart",
+      "name": "On drag start",
+      "locale_name": {
+        "fr_FR": "Commencer à glisser"
+      }
+    },
+    {
+      "id": "onDragEnd",
+      "name": "On drag end",
+      "locale_name": {
+        "fr_FR": "Arrêt de glisser"
+      }
+    },
+    {
+      "id": "onRotationStart",
+      "name": "On rotation start",
+      "locale_name": {
+        "fr_FR": "Commencer rotation"
+      }
+    },
+    {
+      "id": "onRotationEnd",
+      "name": "On rotation end",
+      "locale_name": {
+        "fr_FR": "Arrêt rotation"
+      }
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "rotateBy",
+      "name": "Rotate by",
+      "locale_name": {
+        "fr_FR": "Rotation par"
+      },
+      "params": [
+        { "id": "angle", "name": "Angle (Degree)", "locale_name": {"fr_FR": "Angle (Degré)"}, "type": "Float", "value": 0 },
+        { "id": "duration", "name": "Duration", "locale_name": {"fr_FR": "Durée"}, "type": "Float", "value": 0.3 }
+      ]
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "throwProps",
+      "name": "Physics",
+      "locale_name": {
+        "fr_FR": "Physique"
+      },
+      "type": "Boolean",
+      "value": true
+    },    {
+      "id": "throwResistance",
+      "name": "Resistance",
+      "locale_name": {
+        "fr_FR": "Résistance"
+      },
+      "type": "Integer",
+      "value": 10000
+    },
+    {
+      "id": "minRotation",
+      "name": "Min rotation",
+      "type": "Float",
+      "activable": false,
+      "value": 0
+    },
+    {
+      "id": "maxRotation",
+      "name": "Max rotation",
+      "type": "Float",
+      "activable": false,
+      "value": 360
+    },
+    {
+      "id": "rotationSnap",
+      "name": "Rotation snap",
+      "type": "Float",
+      "activable": false,
+      "value": 90
+    },
+    {
+      "id": "isNearestSnap",
+      "name": "Nearest snap",
+      "locale_name": {
+        "fr_FR": "Magnétisme de proximité"
+      },
+      "type": "Boolean",
+      "activable": false,
+      "value": false
+    }
+  ],
+
+  "synchronization": [
+    {
+      "id": "synchroRotation",
+      "name": "Synchronize rotation",
+      "locale_name": {
+        "fr_FR": "Synchroniser rotation"
+      }
+    }
+  ],
+
+  "resources": [
+    {
+      "id": "my_image.png",
+      "name": "Rotated image",
+      "locale_name": {
+        "fr_FR": "Image pivotée"
+      },
+      "type": "Image"
+    }
+  ]
+
+}
