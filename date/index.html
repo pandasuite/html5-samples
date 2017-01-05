@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Date HTML Component for PandaSuite</title>
+  <script src="./panda-bridge-3.0.3.min.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (document.readyState === 'complete') {
+          myInit();
+        } else {
+          document.addEventListener("DOMContentLoaded", myInit, false);
+        }
+      });
+
+      function myInit() {
+        dispatchMarkers();
+      }
+
+      /* Markers */
+
+      PandaBridge.getSnapshotData(function() {
+        return { id: new Date().getTime() };
+      });
+
+      PandaBridge.setSnapshotData(function(pandaData) {
+      });
+
+      /* Actions */
+
+      PandaBridge.listen('triggeringDate', function(args) {
+        dispatchMarkers();
+      });
+
+      function dispatchMarkers() {
+        if (markers) {
+          var currentDate = new Date().getTime();
+
+          markers.forEach(function(marker) {
+            if ((marker.above && parseFloat(marker.id) > currentDate) ||
+              (!marker.above && parseFloat(marker.id) < currentDate)) {
+              PandaBridge.send('triggerMarker', marker.id);
+            }
+          });
+        }
+      }
+
+    });
+
+  </script>
+</head>
+<body>
+</body>
+</html>

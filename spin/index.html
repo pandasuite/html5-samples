@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Spin HTML Component for PandaSuite</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="./panda-bridge-3.0.2.min.js"></script>
+  <script src="./panda-bridge-3.0.3.min.js"></script>
   <script src="js/TweenLite.min.js"></script>
   <script src="js/utils/Draggable.min.js"></script>
   <script src="js/plugins/CSSPlugin.min.js"></script>
@@ -30,6 +29,14 @@
       });
 
       function myInit() {
+
+        if (navigator.userAgent.indexOf("Crosswalk") != -1) {
+          var viewPortTag = document.createElement('meta');
+          viewPortTag.id = "viewport";
+          viewPortTag.name = "viewport";
+          viewPortTag.content = "width=device-width; initial-scale=1.0;";
+          document.getElementsByTagName('head')[0].appendChild(viewPortTag);
+        }
 
         var rotatedImage = PandaBridge.resolvePath('my_image.png', './knob.png');
         document.getElementById('container').style.backgroundImage = 'url(' + rotatedImage + ')';

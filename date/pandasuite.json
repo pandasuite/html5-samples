@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "system": {
+    "autoSave": false,
+    "events": [
+      {
+        "id": "triggerMarker",
+        "name": "Date",
+        "locale_name": {
+          "fr_FR": "Date"
+        }
+      }
+    ],
+    "markers": [
+      {
+        "params": [
+          { "id": "above", "name": "Above", "locale_name": {"fr_FR": "Au dessus"}, "type": "Boolean" }
+        ]
+      }
+    ]
+  },
+
+  "events": [
+  ],
+
+  "actions": [
+    {
+      "id": "triggeringDate",
+      "name": "Triggering the date",
+      "locale_name": {
+        "fr_FR": "Déclenchement de la date"
+      },
+      "params": [
+      ]
+    }
+  ],
+
+  "properties": [
+  ]
+
+}
