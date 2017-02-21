@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="./panda-bridge-3.0.3.min.js"></script>
+  <style type="text/css">
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+  }
+  textarea, div {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    text-align: center;
+  }
+  </style>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        var currentValue = null;
+
+        if (properties && properties.id) {
+          currentValue = localStorage.getItem(properties.id);
+        }
+
+        if (properties.isInput) {
+          document.getElementById('result').style.display = 'none';
+          if (currentValue) {
+            document.getElementById('textarea').value = currentValue;
+          }
+        } else {
+          document.getElementById('textarea').style.display = 'none';
+
+          if (currentValue) {
+            document.getElementById('result').innerHTML = currentValue;
+          }
+          addStorageHandler(window, function (evt) {
+            if (properties && evt.key == properties.id) {
+              document.getElementById('result').innerHTML = evt.newValue;
+            }
+          });
+        }
+
+      });
+
+      PandaBridge.listen('refresh', function(args) {
+        if (properties && properties.id) {
+          var value = localStorage.getItem(properties.id);
+          document.getElementById('textarea').value = value;
+          document.getElementById('result').innerHTML = value;
+        }
+      });
+
+      PandaBridge.listen('clear', function(args) {
+        document.getElementById('textarea').value = '';
+        document.getElementById('result').innerHTML = '';
+
+        if (properties && properties.id) {
+          localStorage.removeItem(properties.id);
+          PandaBridge.send('keyPressed');
+        }
+      });
+
+    });
+
+    function onTextChanged() {
+      if (properties && properties.id) {
+        localStorage.setItem(properties.id, document.getElementById('textarea').value);
+      }
+      PandaBridge.send('keyPressed');
+    };
+
+    function addStorageHandler(element, handler) {
+      if (window.addEventListener) {
+          element.addEventListener('storage', handler, false);
+          return false;
+      }
+      window.attachEvent('onstorage', handler);
+    };
+
+  </script>
+</head>
+<body>
+  <textarea id="textarea" onkeyup="onTextChanged()" autofocus></textarea>
+  <div id="result"></div>
+</body>
+</html>

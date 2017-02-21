@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "keyPressed",
+      "name": "Key Pressed",
+      "locale_name": {
+        "fr_FR": "Touche enfoncée"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "id",
+      "name": "Identifier",
+      "locale_name": {
+        "fr_FR": "Identificateur"
+      },
+      "type": "String",
+      "value": "input_one"
+    },
+    {
+      "id": "isInput",
+      "name": "Input",
+      "locale_name": {
+        "fr_FR": "Entrée"
+      },
+      "type": "Boolean",
+      "value": true
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "refresh",
+      "name": "Refresh storage",
+      "locale_name": {
+        "fr_FR": "Actualiser le stockage"
+      }
+    },
+    {
+      "id": "clear",
+      "name": "Clear storage",
+      "locale_name": {
+        "fr_FR": "Effacer le stockage"
+      }
+    }
+  ]
+
+}
