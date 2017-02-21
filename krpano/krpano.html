@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PandaSuite krpano</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta http-equiv="x-ua-compatible" content="IE=edge" />
+	<style>
+		@-ms-viewport { width:device-width; }
+		@media only screen and (min-device-width:800px) { html { overflow:hidden; } }
+		html { height:100%; }
+		body { height:100%; overflow:hidden; margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#FFFFFF; background-color:#000000; }
+	</style>
+
+	<script src="js/panda-bridge-3.0.3.min.js"></script>
+	<script src="js/hammer.min.js"></script>
+	<script src="js/hammer-time.min.js"></script>
+
+	<script type="text/javascript">
+
+		var properties = null;
+		var markers = null;
+		var krpano = null;
+
+		PandaBridge.init(function() {
+
+			PandaBridge.onLoad(function(pandaData) {
+				properties = pandaData.properties;
+				markers = pandaData.markers;
+
+				waitForInit();
+			});
+
+			function waitForInit() {
+				krpano = document.getElementById("krpanoSWFObject");
+				if (!krpano) {
+					window.requestAnimationFrame(waitForInit);
+				} else {
+					myInit();
+				}
+			}
+
+			function myInit() {
+
+				krpano.call("set(plugin[video].videourl, " + PandaBridge.resolvePath('video.mp4') + ");");
+
+				if (!properties.isAutoPlay) {
+					krpano.call("set(plugin[video].pausedonstart, true);");
+				}
+
+				if (!properties.isGyro) {
+					krpano.call("set(plugin[gyro].enabled, false);");
+				}
+
+				var panoElem = document.getElementById('pano');
+				var hammertime = new Hammer(panoElem);
+
+				hammertime.get('press').set({
+					time: 1,
+					pointers: 1,
+					threshold: 10
+				});
+
+				hammertime.on('tap', function(ev) {
+					if (ev.tapCount == 1) {
+						PandaBridge.send('singleTap');
+					} else if (ev.tapCount == 2) {
+						PandaBridge.send('doubleTap');
+					}
+				});
+
+				var pressed = false;
+
+				hammertime.on('press', function(ev) {
+					pressed = true;
+					PandaBridge.send('touchDown');
+				});
+
+				function onRelease (e) {
+					if (pressed) {
+						PandaBridge.send('touchUp');
+						pressed = false;
+					}
+				}
+
+				panoElem.addEventListener('mouseup', onRelease);
+				panoElem.addEventListener('touchend', onRelease);
+
+			}
+
+			PandaBridge.listen('play', function(args) {
+				if (krpano) {
+					krpano.call("plugin[video].play();");
+				}
+			});
+
+			PandaBridge.listen('stop', function(args) {
+				if (krpano) {
+					krpano.call("plugin[video].stop();");
+				}
+			});
+
+			PandaBridge.listen('pause', function(args) {
+				if (krpano) {
+					krpano.call("plugin[video].pause();");
+				}
+			});
+
+			PandaBridge.listen('togglePause', function(args) {
+				if (krpano) {
+					krpano.call("plugin[video].togglepause();");
+				}
+			});
+
+			/* Markers */
+
+			// PandaBridge.getSnapshotData(function() {
+			// 	return { id: null };
+			// });
+
+			// PandaBridge.setSnapshotData(function(pandaData) {
+			// });
+
+		});
+
+	</script>
+</head>
+<body>
+
+<script src="krpano.js"></script>
+
+<div id="pano" style="width:100%;height:100%;">
+	<noscript><table style="width:100%;height:100%;"><tr style="vertical-align:middle;text-align:center;"><td>ERROR:<br><br>Javascript not activated<br><br></td></tr></table></noscript>
+	<script>
+		embedpano({swf:"krpano.swf", xml:"krpano.xml", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:true});
+	</script>
+	<script type="text/javascript">
+		(function() {
+				var lastTime = 0;
+				var vendors = ['ms', 'moz', 'webkit', 'o'];
+				for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+						window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+						window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+																			 || window[vendors[x]+'CancelRequestAnimationFrame'];
+				}
+
+				if (!window.requestAnimationFrame)
+						window.requestAnimationFrame = function(callback, element) {
+								var currTime = new Date().getTime();
+								var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+								var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+									timeToCall);
+								lastTime = currTime + timeToCall;
+								return id;
+						};
+
+				if (!window.cancelAnimationFrame)
+						window.cancelAnimationFrame = function(id) {
+								clearTimeout(id);
+						};
+		}());
+	</script>
+</div>
+
+</body>
+</html>

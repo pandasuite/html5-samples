@@ -1,0 +1,96 @@
+{
+  "version": "2.0.0",
+  "main": "krpano.html",
+
+  "events": [
+    {
+      "id": "singleTap",
+      "name": "Single tap",
+      "locale_name": {
+        "fr_FR": "Simple tap"
+      }
+    },
+    {
+      "id": "doubleTap",
+      "name": "Double tap"
+    },
+    {
+      "id": "touchDown",
+      "name": "Touch down",
+      "locale_name": {
+        "fr_FR": "Touche"
+      }
+    },
+    {
+      "id": "touchUp",
+      "name": "Touch up",
+      "locale_name": {
+        "fr_FR": "Relâche"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "isGyro",
+      "name": "Gyroscope enabled",
+      "locale_name": {
+        "fr_FR": "Gyroscope activé"
+      },
+      "type": "Boolean",
+      "value": true
+    },
+    {
+      "id": "isAutoPlay",
+      "name": "Auto play",
+      "locale_name": {
+        "fr_FR": "Lecture auto"
+      },
+      "type": "Boolean",
+      "value": true
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "play",
+      "name": "Play",
+      "locale_name": {
+        "fr_FR": "Lecture"
+      }
+    },
+    {
+      "id": "stop",
+      "name": "Stop",
+      "locale_name": {
+        "fr_FR": "Arrêter"
+      }
+    },
+    {
+      "id": "pause",
+      "name": "Pause",
+      "locale_name": {
+        "fr_FR": "Mettre en pause"
+      }
+    },
+    {
+      "id": "togglePause",
+      "name": "Play/Pause",
+      "locale_name": {
+        "fr_FR": "Lecture/Pause"
+      }
+    }
+  ],
+
+  "resources": [
+    {
+      "id": "video.mp4",
+      "name": "360 Video",
+      "locale_name": {
+        "fr_FR": "Video 360"
+      },
+      "type": "Video"
+    }
+  ]
+
+}

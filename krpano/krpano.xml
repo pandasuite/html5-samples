@@ -1,0 +1,24 @@
+﻿<krpano>
+
+    <!-- include the videoplayer plugin -->
+    <plugin name="video"
+            url.flash="plugins/videoplayer.swf"
+            url.html5="plugins/videoplayer.js"
+            />
+
+    <plugin name="gyro" devices="html5" keep="true"
+        url="plugins/gyro.js"
+        enabled="true"
+        camroll="true"
+        friction="0.0"
+        velastic="0.0"
+        vrelative="false"
+        onavailable=""
+        />
+
+    <!-- define the pano image and refer to the videoplayer plugin -->
+    <image>
+        <sphere url="plugin:video" />
+    </image>
+
+</krpano>
