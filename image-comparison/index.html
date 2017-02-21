@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="./panda-bridge-3.0.3.min.js"></script>
+
+	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+
+	<title>PandaSuite - Image Comparison Slider</title>
+
+	<script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    var currentPosition = 50;
+
+		PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (document.readyState === 'complete') {
+          myInit();
+        } else {
+          document.addEventListener("DOMContentLoaded", myInit, false);
+        }
+      });
+
+      function myInit() {
+
+        if (navigator.userAgent.indexOf("Crosswalk") != -1) {
+          var viewPortTag = document.createElement('meta');
+          viewPortTag.id = "viewport";
+          viewPortTag.name = "viewport";
+          viewPortTag.content = "width=device-width; initial-scale=1.0;";
+          document.getElementsByTagName('head')[0].appendChild(viewPortTag);
+        }
+
+        var imgOriginal = PandaBridge.resolvePath('img_original.png', 'img/img-original.jpg');
+        document.getElementById('original').src = imgOriginal;
+
+        var imgModified = PandaBridge.resolvePath('img_modified.png', 'img/img-modified.jpg');
+        document.getElementById('modified').src = imgModified;
+
+        properties.handleBackgroundColor = properties.handleBackgroundColor || '#dc717d';
+        properties.handleHoverBackgroundColor = properties.handleHoverBackgroundColor || '#445b7c';
+
+        if (properties.isHandleHidden) {
+        	var handle = document.getElementsByClassName('cd-handle')[0];
+        	handle.style.height = '100%';
+        	handle.style.top = '0px';
+        	handle.style['margin-top'] = '0px';
+        } else {
+	        $('.cd-handle').css({ 'background-color': properties.handleBackgroundColor });
+	        $('.cd-handle').mousedown(function() {
+	          $(this).css('background-color', properties.handleHoverBackgroundColor);
+	        });
+
+	        $('body').mouseup(function() {
+	          $('.cd-handle').css('background-color', properties.handleBackgroundColor);
+	        });
+        }
+
+        window.handleOffset = properties.handleOffset || -22;
+
+        $(document).on('data-attribute-changed', function(event, data) {
+        	onPositionChange(data);
+				});
+
+				$('.cd-image-container').css('opacity', 1);
+
+				if (properties.isAnimated) {
+	        $('.cd-resize-img').css('animation', 'cd-bounce-in 0.7s');
+	        if (!properties.isHandleHidden) {
+  	      	$('.cd-handle').css('animation', 'cd-handle-animation 0.3s ease 0.7s forwards');
+  	      }
+				} else if (!properties.isHandleHidden) {
+					$('.cd-handle').css({ opacity: 1 });
+				}
+      }
+
+      function changePosition(percent, duration) {
+        $('.cd-resize-img').animate({ width: percent + '%' }, duration);
+        $('.cd-handle').animate({ left: percent + '%' }, duration);
+        currentPosition = percent;
+      }
+
+      function onPositionChange(data) {
+        /* Markers */
+        if (markers) {
+          markers.forEach(function(marker) {
+            if (isValueInRange(parseFloat(marker.id), parseFloat(data), parseFloat(currentPosition))) {
+              PandaBridge.send('triggerMarker', marker.id);
+            }
+          });
+        }
+      	currentPosition = data;
+
+      	/*synchronize */
+        PandaBridge.send('synchronize', [currentPosition, 'synchroPosition', true]);
+      }
+
+      function isValueInRange(testValue, currentValue, oldValue) {
+        var minvalue = Math.min(oldValue, currentValue);
+        var maxvalue = Math.max(oldValue, currentValue);
+
+        return (!oldValue && testValue == currentValue) ||
+	        ((oldValue <= currentValue && (testValue > minvalue && testValue <= maxvalue)) ||
+            (oldValue > currentValue && (testValue >= minvalue && testValue < maxvalue)));
+      }
+
+      /* Markers */
+
+      PandaBridge.getSnapshotData(function() {
+        return { id: currentPosition + '' };
+      });
+
+      PandaBridge.setSnapshotData(function(pandaData) {
+      	changePosition(pandaData.data.id, pandaData.params.duration || 0);
+      });
+
+      /* Actions */
+
+      PandaBridge.synchronize('synchroPosition', function(percent) {
+      	changePosition(percent, 0);
+      });
+
+    });
+	</script>
+
+</head>
+<body>
+	<figure class="cd-image-container">
+		<img id="original" src="" alt="Original Image">
+
+		<div class="cd-resize-img"> <!-- the resizable image on top -->
+			<img id="modified" src="" alt="Modified Image">
+		</div>
+
+		<span class="cd-handle"></span>
+	</figure> <!-- cd-image-container -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/jquery.mobile.custom.min.js"></script> <!-- Resource jQuery -->
+<script src="js/main.js"></script> <!-- Resource jQuery -->
+</body>
+</html>

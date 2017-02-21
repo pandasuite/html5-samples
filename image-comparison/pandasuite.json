@@ -1,0 +1,124 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "system": {
+    "autoSave": false,
+    "actions": [
+      {
+        "id": "toMarker",
+        "name": "Change Position",
+        "locale_name": {
+          "fr_FR": "Changer Position"
+        },
+        "params": [
+          { "id": "duration", "name": "Duration", "locale_name": {"fr_FR": "Durée"}, "type": "Float" }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "triggerMarker",
+        "name": "Position",
+        "locale_name": {
+          "fr_FR": "Position"
+        }
+      }
+    ]
+  },
+
+  "events": [
+    {
+      "id": "onDragStart",
+      "name": "On drag start",
+      "locale_name": {
+        "fr_FR": "Commencer à glisser"
+      }
+    },
+    {
+      "id": "onDragEnd",
+      "name": "On drag end",
+      "locale_name": {
+        "fr_FR": "Arrêt de glisser"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "handleBackgroundColor",
+      "name": "Handle background color",
+      "locale_name": {
+        "fr_FR": "Couleur de fond Poignée"
+      },
+      "type": "String",
+      "value": "#dc717d"
+    },
+    {
+      "id": "handleHoverBackgroundColor",
+      "name": "Handle background color (hover)",
+      "locale_name": {
+        "fr_FR": "Couleur de fond Poignée (survol)"
+      },
+      "type": "String",
+      "value": "#445b7c"
+    },
+    {
+      "id": "handleOffset",
+      "name": "Handle offset",
+      "locale_name": {
+        "fr_FR": "Décalage Poignée"
+      },
+      "type": "Integer",
+      "value": -22
+    },
+    {
+      "id": "isAnimated",
+      "name": "Starting Animation",
+      "locale_name": {
+        "fr_FR": "Animation de départ"
+      },
+      "type": "Boolean",
+      "value": true
+    },
+    {
+      "id": "isHandleHidden",
+      "name": "Hide handle",
+      "locale_name": {
+        "fr_FR": "Cache la Poignée"
+      },
+      "type": "Boolean",
+      "value": false
+    }
+  ],
+
+  "synchronization": [
+    {
+      "id": "synchroPosition",
+      "name": "Synchronize position",
+      "locale_name": {
+        "fr_FR": "Synchroniser position"
+      }
+    }
+  ],
+
+  "resources": [
+    {
+      "id": "img_original.png",
+      "name": "Original image",
+      "locale_name": {
+        "fr_FR": "Image d'origine"
+      },
+      "type": "Image"
+    },
+    {
+      "id": "img_modified.png",
+      "name": "Modified image",
+      "locale_name": {
+        "fr_FR": "Image modifiée"
+      },
+      "type": "Image"
+    }
+  ]
+
+}
