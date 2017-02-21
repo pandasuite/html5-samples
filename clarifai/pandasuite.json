@@ -1,0 +1,53 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "system": {
+    "autoSave": false,
+    "markers": [
+      {
+        "params": [
+          { "id": "value", "name": "Minimum value", "locale_name": {"fr_FR": "Valeur minimale"}, "type": "String" }
+        ]
+      }
+    ]
+  },
+
+  "events": [
+    {
+      "id": "onStart",
+      "name": "On start",
+      "locale_name": {
+        "fr_FR": "Au commencement"
+      }
+    },
+    {
+      "id": "onSuccess",
+      "name": "On success",
+      "locale_name": {
+        "fr_FR": "Succès"
+      }
+    },
+    {
+      "id": "onError",
+      "name": "On error",
+      "locale_name": {
+        "fr_FR": "Erreur"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "clientId",
+      "name": "Clarifai clientId",
+      "type": "String"
+    },
+    {
+      "id": "clientSecret",
+      "name": "Clarifai clientSecret",
+      "type": "String"
+    }
+  ]
+
+}

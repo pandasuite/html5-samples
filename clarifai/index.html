@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clarifai Component for PandaSuite</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="./panda-bridge-3.0.3.min.js"></script>
+  <script type="text/javascript" src="https://sdk.clarifai.com/js/clarifai-2.0.9.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (document.readyState === 'complete') {
+          myInit();
+        } else {
+          document.addEventListener("DOMContentLoaded", myInit, false);
+        }
+      });
+
+      function myInit() {
+
+        var input = document.getElementById('capture');
+        input.addEventListener('change', function() {
+          if (input.value !== "") {
+            PandaBridge.send('onStart');
+            handleFile(input.files);
+          }
+        });
+
+      }
+
+      /* Markers */
+
+      PandaBridge.getSnapshotData(function() {
+        return { id: 'TAG_NAME' };
+      });
+
+      PandaBridge.setSnapshotData(function(pandaData) {
+      });
+
+      /* Private methods */
+
+      function handleFile(f) {
+        var reader = new FileReader();
+
+        reader.onload = (function() {
+          return function(e) {
+
+            var app = new Clarifai.App(
+              properties.clientId,
+              properties.clientSecret
+            );
+
+            app.models.predict(Clarifai.GENERAL_MODEL, { base64: e.target.result.split(',')[1] }).then(
+              function(response) {
+                if (response.data && response.data.status.code == 10000) {
+                  PandaBridge.send('onSuccess');
+                  var concepts = response.data.outputs[0].data.concepts;
+                  concepts.forEach(function(concept) {
+                    markers.forEach(function(m) {
+                      if (concept.name == m.id && (!m.value || concept.value > parseFloat(m.value))) {
+                        console.log('triggerMarker', m);
+                        PandaBridge.send("triggerMarker", m.id);
+                      }
+                    });
+                  });
+                } else {
+                  PandaBridge.send('onError');
+                }
+              },
+              function(err) {
+                console.error(err);
+                PandaBridge.send('onError');
+              }
+            );
+
+          };
+        })(f[0]);
+        reader.readAsDataURL(f[0]);
+      }
+
+    });
+
+  </script>
+</head>
+<body>
+  <div class="input-file">
+    <input type="file" accept="image/*" id="capture" capture="camera">
+  </div>
+</body>
+</html>
