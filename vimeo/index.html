@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="./panda-bridge-3.0.3.min.js"></script>
+  <style type="text/css">
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+  }
+  textarea, div {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    text-align: center;
+  }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+    var player = null;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (!properties.isInteractive) {
+          document.getElementById('container').style.pointerEvents = 'none';
+        }
+
+        var options = {
+          id: properties.id,
+          width: $('#container').width(),
+          height: $('#container').height(),
+          loop: false
+        };
+
+        player = new Vimeo.Player('container', options);
+
+        player.on('play', function(data) {
+          PandaBridge.send('onPlay');
+        });
+
+        player.on('ended', function(data) {
+          PandaBridge.send('onFinish');
+        });
+
+        if (properties.isAutoPlay) {
+          player.play();
+        }
+
+      });
+
+      PandaBridge.listen('play', function(args) {
+        if (player) {
+          player.play();
+        }
+      });
+
+      PandaBridge.listen('pause', function(args) {
+        if (player) {
+          player.pause();
+        }
+      });
+
+    });
+
+  </script>
+</head>
+<body>
+  <div id="container"></div>
+</body>
+</html>

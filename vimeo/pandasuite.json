@@ -1,0 +1,69 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "onPlay",
+      "name": "Starting play",
+      "locale_name": {
+        "fr_FR": "Commence lecture"
+      }
+    },
+    {
+      "id": "onFinish",
+      "name": "Finish playing",
+      "locale_name": {
+        "fr_FR": "Fin de lecture"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "id",
+      "name": "Identifier",
+      "locale_name": {
+        "fr_FR": "Identificateur"
+      },
+      "type": "String",
+      "value": "147859148"
+    },
+    {
+      "id": "isInteractive",
+      "name": "Interactive",
+      "locale_name": {
+        "fr_FR": "Interactif"
+      },
+      "type": "Boolean",
+      "value": true
+    },
+    {
+      "id": "isAutoPlay",
+      "name": "Auto play",
+      "locale_name": {
+        "fr_FR": "Lecture auto."
+      },
+      "type": "Boolean",
+      "value": true
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "play",
+      "name": "Play",
+      "locale_name": {
+        "fr_FR": "Lecture"
+      }
+    },
+    {
+      "id": "pause",
+      "name": "Pause",
+      "locale_name": {
+        "fr_FR": "Pause"
+      }
+    }
+  ]
+
+}
