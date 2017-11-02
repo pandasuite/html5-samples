@@ -1,0 +1,259 @@
+{
+  "version": "3.0.0",
+  "main": "index.html",
+
+  "system": {
+    "autoSave": false,
+    "htmlBehavior": false,
+    "actions": [
+      {
+        "id": "toMarker",
+        "name": "Change time",
+        "locale_name": {
+          "fr_FR": "Changer Temps"
+        }
+      }
+    ],
+    "events": [
+      {
+        "id": "triggerMarker",
+        "name": "Time",
+        "locale_name": {
+          "fr_FR": "Temps"
+        }
+      }
+    ],
+    "markers": [
+      {
+        "id": "controlBar",
+        "name": "Animation playback (frames)",
+        "locale_name": {
+          "fr_FR": "Lecture de l'animation (frames)"
+        },
+        "type": "Player"
+      },
+      {
+        "id": "setSnapshotData",
+        "name": "Add Frame",
+        "locale_name": {
+          "fr_FR": "Ajouter Frame"
+        }
+      }
+    ]
+  },
+
+  "events": [
+    {
+      "id": "onStartingPlay",
+      "name": "Starting play",
+      "locale_name": {
+        "fr_FR": "Starting play"
+      }
+    },
+    {
+      "id": "onPausePlaying",
+      "name": "Pause playing",
+      "locale_name": {
+        "fr_FR": "Pause playing"
+      }
+    },
+    {
+      "id": "onStoppingPlay",
+      "name": "Stopping play",
+      "locale_name": {
+        "fr_FR": "Stopping play"
+      }
+    },
+    {
+      "id": "onFinishPlaying",
+      "name": "Finish playing",
+      "locale_name": {
+        "fr_FR": "Finish playing"
+      }
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "playPause",
+      "name": "Play/Pause",
+      "locale_name": {
+        "fr_FR": "Play/Pause"
+      }
+    },
+    {
+      "id": "play",
+      "name": "Play",
+      "locale_name": {
+        "fr_FR": "Play"
+      }
+    },
+    {
+      "id": "pause",
+      "name": "Pause",
+      "locale_name": {
+        "fr_FR": "Pause"
+      }
+    },
+    {
+      "id": "stop",
+      "name": "Stop",
+      "locale_name": {
+        "fr_FR": "Stop"
+      }
+    },
+    {
+      "id": "seek",
+      "name": "Seek",
+      "locale_name": {
+        "fr_FR": "Seek"
+      },
+      "params": [
+        { "id": "frame", "name": "Frame", "locale_name": {"fr_FR": "Frame"}, "type": "Integer", "value": 0 }
+      ]
+    },
+    {
+      "id": "forward",
+      "name": "Forward",
+      "locale_name": {
+        "fr_FR": "Forward"
+      },
+      "params": [
+        { "id": "frame", "name": "Frame", "locale_name": {"fr_FR": "Frame"}, "type": "Integer", "value": 1 }
+      ]
+    },
+    {
+      "id": "rewind",
+      "name": "Rewind",
+      "locale_name": {
+        "fr_FR": "Rewind"
+      },
+      "params": [
+        { "id": "frame", "name": "Frame", "locale_name": {"fr_FR": "Frame"}, "type": "Integer", "value": 1 }
+      ]
+    },
+    {
+      "id": "restartFromBeginning",
+      "name": "Restart from beginning",
+      "locale_name": {
+        "fr_FR": "Restart from beginning"
+      }
+    },
+    {
+      "id": "setSpeed",
+      "name": "Set speed",
+      "locale_name": {
+        "fr_FR": "Set speed"
+      },
+      "params": [
+        { "id": "speed", "name": "Speed", "locale_name": {"fr_FR": "Vitesse"}, "type": "Float", "value": 1 }
+      ]
+    },
+    {
+      "id": "increaseSpeed",
+      "name": "Increase speed",
+      "locale_name": {
+        "fr_FR": "Increase speed"
+      },
+      "params": [
+        { "id": "speed", "name": "Speed", "locale_name": {"fr_FR": "Vitesse"}, "type": "Float", "value": 1 }
+      ]
+    },
+    {
+      "id": "decreaseSpeed",
+      "name": "Decrease speed",
+      "locale_name": {
+        "fr_FR": "Decrease speed"
+      },
+      "params": [
+        { "id": "speed", "name": "Speed", "locale_name": {"fr_FR": "Vitesse"}, "type": "Float", "value": 1 }
+      ]
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "animationPath",
+      "name": "Animation object path",
+      "locale_name": {
+        "fr_FR": "Animation object path"
+      },
+      "type": "String",
+      "value": "data.json"
+    },
+    {
+      "id": "loop",
+      "name": "Loop",
+      "locale_name": {
+        "fr_FR": "Boucle"
+      },
+      "type": "Integer",
+      "value": -1
+    },
+    {
+      "id": "autoPlay",
+      "name": "Auto play",
+      "locale_name": {
+        "fr_FR": "Lecture auto."
+      },
+      "type": "Boolean",
+      "value": true
+    },
+    {
+      "id": "speed",
+      "name": "Speed",
+      "locale_name": {
+        "fr_FR": "Vitesse"
+      },
+      "type": "Float",
+      "value": 1
+    },
+    {
+      "id": "minSpeed",
+      "name": "Min",
+      "locale_name": {
+        "fr_FR": "Vitesse minimum"
+      },
+      "type": "Float",
+      "value": 0
+    },
+    {
+      "id": "maxSpeed",
+      "name": "Max",
+      "locale_name": {
+        "fr_FR": "Vitesse maximum"
+      },
+      "type": "Float",
+      "value": 10
+    }
+  ],
+
+  "synchronization": [
+    {
+      "id": "frame",
+      "name": "Synchronize frame values",
+      "locale_name": {
+        "fr_FR": "Synchroniser les frames"
+      }
+    },
+    {
+      "id": "speed",
+      "name": "Synchronize speed",
+      "locale_name": {
+        "fr_FR": "Synchroniser le temps"
+      }
+    }
+  ],
+
+  "resources": [
+    {
+      "id": "animationFolder",
+      "name": "BodyMovin zip file",
+      "locale_name": {
+        "fr_FR": "BodyMovin zip file"
+      },
+      "type": "Zip"
+    }
+  ]
+
+}

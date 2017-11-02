@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>After Effects Component for PandaSuite</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="./panda-bridge-3.0.3.min.js"></script>
+  <script src="js/bodymovin-v4.12.3.min.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    var animation = null;
+    var currentSpeed = 1;
+    var oldFrame = -1;
+    var nbLoop = 0;
+
+    var fromSynchro = false;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (document.readyState === 'complete') {
+          myInit();
+        } else {
+          document.addEventListener("DOMContentLoaded", myInit, false);
+        }
+      });
+
+      function myInit() {
+
+        var jsonUrl = PandaBridge.resolvePath('animationFolder', './') + '/' + properties.animationPath;
+        var loop = properties.loop == -1 ? true : (properties.loop == 0 ? false : properties.loop + 1);
+        nbLoop = properties.loop;
+
+        animation = bodymovin.loadAnimation({
+          container: document.getElementById('container'),
+          renderer: 'svg',
+          loop: loop,
+          autoplay: false,
+          path: jsonUrl
+        });
+
+        window.animation = animation;
+
+        animation.addEventListener('data_ready', function () {
+
+          /* Disable autoPlay in edition mode for convenience */
+          if (properties.autoPlay && !PandaBridge.isStudio) {
+            animation.play();
+            PandaBridge.send('onStartingPlay');
+          }
+
+          if (PandaBridge.isStudio) {
+            PandaBridge.send('__ps_seekMaxResult', animation.totalFrames);
+          }
+
+        });
+
+        animation.addEventListener('enterFrame', onTimeUpdate);
+        animation.addEventListener('loopComplete', function (e) {
+          if (nbLoop > 0) {
+            nbLoop--;
+          }
+        });
+        animation.addEventListener('complete', function () {
+          /* BodyMovin use playCount for stopping the animation (refering to loop property) */
+          /* We reset it to act like a new play */
+          animation.playCount = -1;
+          nbLoop = properties.loop;
+
+          /* BodyMovin bug: it call loopComplete on the futur start without this two lines */
+          fromSynchro = true;
+          setFrame(0);
+
+          PandaBridge.send('onFinishPlaying');
+        });
+
+        animation.setSpeed(properties.speed);
+        currentSpeed = properties.speed;
+      }
+
+      /* Markers */
+
+      PandaBridge.getSnapshotData(function() {
+        if (!animation) {
+          return null;
+        }
+        return { id: Math.round(animation.currentRawFrame) };
+      });
+
+      PandaBridge.setSnapshotData(function(pandaData) {
+        setFrame(parseInt(pandaData.data.id));
+      });
+
+      /* Actions */
+
+      PandaBridge.listen('playPause', function(args) {
+        if (animation && animation.isPaused) {
+          animation.play();
+          PandaBridge.send('onStartingPlay');
+        } else if (animation) {
+          animation.pause();
+          PandaBridge.send('onPausePlaying');
+        }
+      });
+
+      PandaBridge.listen('play', function(args) {
+        if (animation) {
+          animation.play();
+          PandaBridge.send('onStartingPlay');
+        }
+      });
+
+      PandaBridge.listen('pause', function(args) {
+        if (animation && !animation.isPaused) {
+          animation.pause();
+          PandaBridge.send('onPausePlaying');
+        }
+      });
+
+      PandaBridge.listen('stop', function(args) {
+        if (animation) {
+          animation.stop();
+          animation.playCount = 0;
+          nbLoop = properties.loop;
+          PandaBridge.send('onStoppingPlay');
+        }
+      });
+
+      PandaBridge.listen('seek', function(args) {
+        var props = args[0] || {};
+
+        setFrame(Math.min(Math.max(parseInt(props.frame), 0), animation.totalFrames - 1));
+      });
+
+      PandaBridge.listen('forward', function(args) {
+        var props = args[0] || {};
+
+        setFrame(Math.min(animation.currentRawFrame + parseInt(props.frame), animation.totalFrames - 1));
+      });
+
+      PandaBridge.listen('rewind', function(args) {
+        var props = args[0] || {};
+
+        setFrame(Math.max(animation.currentRawFrame - parseInt(props.frame), 0));
+      });
+
+      PandaBridge.listen('restartFromBeginning', function(args) {
+        if (animation) {
+          animation.goToAndPlay(0);
+        }
+      });
+
+      PandaBridge.listen('setSpeed', function(args) {
+        var props = args[0] || {};
+
+        if (animation) {
+          animation.setSpeed(parseFloat(props.speed));
+        }
+      });
+
+      PandaBridge.listen('increaseSpeed', function(args) {
+        var props = args[0] || {};
+
+        if (animation) {
+          var speed = Math.min(currentSpeed + parseFloat(props.speed), properties.maxSpeed)
+          animation.setSpeed(speed);
+          currentSpeed = speed;
+        }
+      });
+
+      PandaBridge.listen('decreaseSpeed', function(args) {
+        var props = args[0] || {};
+
+        if (animation) {
+          var speed = Math.max(currentSpeed - parseFloat(props.speed), properties.minSpeed);
+          animation.setSpeed(speed);
+          currentSpeed = speed;
+        }
+      });
+
+      PandaBridge.synchronize('frame', function(percent) {
+        if (animation) {
+          fromSynchro = true;
+
+          var additionalFrames = 0;
+          if (properties.loop != -1) {
+            nbLoop = properties.loop - Math.floor(percent / (100 / (properties.loop + 1)));
+            additionalFrames = properties.loop * animation.totalFrames;
+          }
+          setFrame(percent * (animation.totalFrames - 1 + additionalFrames) / 100 % animation.totalFrames);
+        }
+      });
+
+      PandaBridge.synchronize('speed', function(percent) {
+        if (animation) {
+          animation.setSpeed(((properties.maxSpeed - properties.minSpeed) * percent / 100) + properties.minSpeed);
+        }
+      });
+
+      /* Private methods */
+
+      function setFrame(frame) {
+        if (!animation) {
+          return ;
+        }
+
+        if (animation.playCount == -1) {
+          animation.playCount = 0;
+        }
+        animation.setCurrentRawFrameValue(frame);
+      }
+
+      function onTimeUpdate() {
+        var currentFrame = animation.currentRawFrame;
+
+        /* Markers */
+        if (markers) {
+          markers.forEach(function(marker) {
+            if (isValueInRange(marker.id, currentFrame, oldFrame, 0, animation.totalFrames - 1)) {
+              PandaBridge.send('triggerMarker', marker.id);
+            }
+          });
+        }
+
+        /* Synchronisation status */
+        if (!fromSynchro) {
+          var percent = parseInt(animation.currentRawFrame) * 100 / (animation.totalFrames - 1);
+          if (properties.loop != -1) {
+            percent = (parseInt(animation.currentRawFrame) + ((properties.loop - nbLoop) * animation.totalFrames)) * 100 /
+                (animation.totalFrames + (properties.loop * animation.totalFrames) - 1);
+          }
+          PandaBridge.send('synchronize', [percent, 'frame', true]);
+        } else {
+          fromSynchro = false;
+        }
+
+        oldFrame = currentFrame;
+      }
+
+      function isValueInRange(testValue, currentValue, oldValue, minBorder, maxBorder) {
+        var minvalue = Math.min(oldValue, currentValue);
+        var maxvalue = Math.max(oldValue, currentValue);
+
+        var isLooping = (Math.abs(oldValue - currentValue) > (maxBorder - minBorder) * 0.85) && oldValue != -1;
+        return ((isLooping && ((testValue > maxvalue && testValue <= maxBorder) ||
+            (testValue >= minBorder && testValue <= minvalue))) ||
+          (!isLooping && ((oldValue <= currentValue && (testValue > minvalue && testValue <= maxvalue)) ||
+            (oldValue > currentValue && (testValue >= minvalue && testValue < maxvalue)))));
+      }
+
+    });
+
+  </script>
+</head>
+<body>
+  <div id="container">
+  </div>
+</body>
+</html>
