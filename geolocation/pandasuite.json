@@ -3,6 +3,7 @@
   "main": "index.html",
 
   "system": {
+    "name": "Geolocation",
     "events": [
       {
         "id": "triggerMarker",
@@ -10,6 +11,15 @@
         "locale_name": {
           "fr_FR": "Coordonnées GPS"
         }
+      }
+    ],
+    "markers": [
+      {
+        "params": [
+          { "id": "enter", "name": "Geofence enter", "locale_name": {"fr_FR": "Entrée Geofence"}, "type": "Boolean" },
+          { "id": "exit", "name": "Geofence exit", "locale_name": {"fr_FR": "Sortie Geofence"}, "type": "Boolean" },
+          { "id": "radius", "name": "Radius", "locale_name": {"fr_FR": "Rayon"}, "type": "Float" }
+        ]
       }
     ]
   },
@@ -39,18 +49,6 @@
       },
       "type": "Float",
       "value": 20
-    }
-  ],
-
-  "markers": [
-    {
-      "id": "home",
-      "name": "Panda Home",
-      "data": {
-        "lat": 48.864051319607476,
-        "lng": 2.3559504747390747
-      },
-      "default": true
     }
   ]
 

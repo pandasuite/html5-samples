@@ -15,13 +15,85 @@
       #map {
         height: 100%;
       }
+      #description {
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+      }
+
+      #infowindow-content .title {
+        font-weight: bold;
+      }
+
+      #infowindow-content {
+        display: none;
+      }
+
+      #map #infowindow-content {
+        display: inline;
+      }
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+      }
+      #target {
+        width: 345px;
+      }
     </style>
   </head>
   <body>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box" style="display: none;">
     <div id="map"></div>
     <script>
       var map = null;
       var marker = null;
+      var circle = null;
       var initialLocation;
 
       var properties = null;
@@ -36,8 +108,11 @@
           if (PandaBridge.isStudio) {
             var script = document.createElement("script");
             script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?callback=initMap" +
-              (properties.apiKey ? "&key=" + properties.apiKey : ""));
+              (properties.apiKey ? "&libraries=places&key=" + properties.apiKey : ""));
             document.getElementsByTagName("head")[0].appendChild(script);
+            if (properties.apiKey) {
+              document.getElementById('pac-input').style.display = 'inline';
+            }
           } else {
             initGeolocation();
           }
@@ -45,14 +120,15 @@
 
         PandaBridge.getSnapshotData(function() {
           if (marker != null) {
-            return { lat: marker.getPosition().lat(), lng: marker.getPosition().lng() }
+            return { lat: marker.getPosition().lat(), lng: marker.getPosition().lng(), radius: circle.getRadius() }
           }
           return null;
         });
 
         PandaBridge.setSnapshotData(function(pandaData) {
-          pandaData.data.lat = parseFloat(pandaData.data.lat)
-          pandaData.data.lng = parseFloat(pandaData.data.lng)
+          pandaData.data.lat = parseFloat(pandaData.data.lat);
+          pandaData.data.lng = parseFloat(pandaData.data.lng);
+          pandaData.data.radius = parseFloat(pandaData.data.radius);
           if (map != null) {
             addMarker(pandaData.data);
           } else {
@@ -76,6 +152,28 @@
           addMarker(event.latLng);
         });
 
+        if (PandaBridge.isStudio) {
+          var input = document.getElementById('pac-input');
+          var searchBox = new google.maps.places.SearchBox(input);
+          map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+          map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+          });
+
+          searchBox.addListener('places_changed', function() {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+              return;
+            }
+
+            var bounds = places[0].geometry.location;
+            addMarker(bounds);
+            map.fitBounds(bounds);
+          });
+        }
+
         initGeolocation();
       }
 
@@ -89,9 +187,13 @@
             };
 
             markers.forEach(function(m) {
-              if (getHaversineDistance(pos, m) < properties.detectionDistance) {
+              var markerIsInRadius = getHaversineDistance(pos, m) < (m.radius || properties.detectionDistance);
+              if ((markerIsInRadius && !m.enter && !m.exit) ||
+                  (markerIsInRadius && m.enter && !m.oldPosInRadius) ||
+                  (!markerIsInRadius && m.exit && m.oldPosInRadius)) {
                 PandaBridge.send("triggerMarker", m.id);
               }
+              m.oldPosInRadius = markerIsInRadius;
             });
           }, function(e) {
             initGeolocation();
@@ -104,12 +206,25 @@
       function addMarker(location) {
         if (marker) {
           marker.setMap(null);
+          circle.setMap(null);
         }
+
         marker = new google.maps.Marker({
           position: location,
           map: map
         });
         map.setCenter(location);
+
+        circle = new google.maps.Circle({
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
+          map: map,
+          center: location,
+          radius: location.radius || properties.detectionDistance
+        });
       }
 
       function handleLocationError(browserHasGeolocation) {
