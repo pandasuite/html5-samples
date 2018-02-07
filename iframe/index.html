@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%; overflow: hidden;">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <title></title>
+  <script src="./panda-bridge-3.0.3.min.js"></script>
+  <script type="text/javascript">
+    var properties = null;
+    var markers = null;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (document.readyState === 'complete') {
+          myInit();
+        } else {
+          document.addEventListener("DOMContentLoaded", myInit, false);
+        }
+      });
+
+      function myInit() {
+        document.getElementById('gframe').src = properties.url;
+      }
+    });
+  </script>
+</head>
+<body style="margin: 0; border: 0; width: 100%; height: 100%; overflow: hidden;">
+  <iframe id="gframe" src="about:blank" frameborder="0" style="width: 100%; height: 100%; border: 0; overflow: hidden;" />
+</body>
+</html>
