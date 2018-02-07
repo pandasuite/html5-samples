@@ -90,6 +90,14 @@
         "fr_FR": "Video 360"
       },
       "type": "Video"
+    },
+    {
+      "id": "image.jpg",
+      "name": "360 Image",
+      "locale_name": {
+        "fr_FR": "360 Image"
+      },
+      "type": "Image"
     }
   ]
 

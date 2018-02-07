@@ -23,6 +23,7 @@
 		var properties = null;
 		var markers = null;
 		var krpano = null;
+		var videoMode = true;
 
 		PandaBridge.init(function() {
 
@@ -44,9 +45,14 @@
 
 			function myInit() {
 
-				krpano.call("set(plugin[video].videourl, " + PandaBridge.resolvePath('video.mp4') + ");");
+				if (PandaBridge.resolvePath('video.mp4')) {
+					krpano.call("set(plugin[video].videourl, " + PandaBridge.resolvePath('video.mp4') + ");");
+				} else {
+					videoMode = false;
+					krpano.call("loadpano(null, image.sphere.url=" + PandaBridge.resolvePath('image.jpg') + ", MERGE, BLEND(1));")
+				}
 
-				if (!properties.isAutoPlay) {
+				if (!properties.isAutoPlay && videoMode) {
 					krpano.call("set(plugin[video].pausedonstart, true);");
 				}
 
@@ -91,25 +97,25 @@
 			}
 
 			PandaBridge.listen('play', function(args) {
-				if (krpano) {
+				if (krpano && videoMode) {
 					krpano.call("plugin[video].play();");
 				}
 			});
 
 			PandaBridge.listen('stop', function(args) {
-				if (krpano) {
+				if (krpano && videoMode) {
 					krpano.call("plugin[video].stop();");
 				}
 			});
 
 			PandaBridge.listen('pause', function(args) {
-				if (krpano) {
+				if (krpano && videoMode) {
 					krpano.call("plugin[video].pause();");
 				}
 			});
 
 			PandaBridge.listen('togglePause', function(args) {
-				if (krpano) {
+				if (krpano && videoMode) {
 					krpano.call("plugin[video].togglepause();");
 				}
 			});
