@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>PandaSuite - Audio</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<link rel="stylesheet" href="css/demo.css" />
+		<script src="js/panda-bridge-3.0.4.min.js"></script>
+		<script>
+				var properties = null;
+				var markers = null;
+
+				PandaBridge.init(function() {
+
+					PandaBridge.onLoad(function(pandaData) {
+						properties = pandaData.properties;
+						markers = pandaData.markers;
+
+						if (document.readyState === 'complete') {
+							myInit();
+						} else {
+							document.addEventListener("DOMContentLoaded", myInit, false);
+						}
+					});
+
+					function myInit() {
+						var tag = '<audio preload="auto" controls><source src="' + properties.url + '"></audio>';
+						document.body.innerHTML = tag;
+					}
+				});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
