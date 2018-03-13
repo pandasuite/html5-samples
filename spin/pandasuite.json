@@ -28,7 +28,8 @@
     "markers": [
       {
         "params": [
-          { "id": "absolute", "name": "absolute", "locale_name": {"fr_FR": "Absolue"}, "type": "Boolean" }
+          { "id": "absolute", "name": "absolute", "locale_name": {"fr_FR": "Absolue"}, "type": "Boolean" },
+          { "id": "final", "name": "final", "locale_name": {"fr_FR": "Final"}, "type": "Boolean" }
         ]
       }
     ]

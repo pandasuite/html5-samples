@@ -3,7 +3,8 @@
 <head>
   <title>Spin HTML Component for PandaSuite</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="./panda-bridge-3.0.3.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+  <script src="./panda-bridge-3.0.4.min.js"></script>
   <script src="js/TweenLite.min.js"></script>
   <script src="js/utils/Draggable.min.js"></script>
   <script src="js/plugins/CSSPlugin.min.js"></script>
@@ -30,14 +31,6 @@
 
       function myInit() {
 
-        if (navigator.userAgent.indexOf("Crosswalk") != -1) {
-          var viewPortTag = document.createElement('meta');
-          viewPortTag.id = "viewport";
-          viewPortTag.name = "viewport";
-          viewPortTag.content = "width=device-width; initial-scale=1.0;";
-          document.getElementsByTagName('head')[0].appendChild(viewPortTag);
-        }
-
         var rotatedImage = PandaBridge.resolvePath('my_image.png', './knob.png');
         document.getElementById('container').style.backgroundImage = 'url(' + rotatedImage + ')';
 
@@ -57,6 +50,7 @@
             PandaBridge.send('onDragEnd');
           },
           onThrowComplete: function () {
+            onRotate(this.rotation, false, true);
             PandaBridge.send('onRotationEnd');
           },
           onDrag: function () {
@@ -148,13 +142,14 @@
         });
       }
 
-      function onRotate(angle, fromSynchro) {
+      function onRotate(angle, fromSynchro, final) {
 
         /* Markers */
         if (markers) {
           markers.forEach(function(marker) {
-            if ((marker.absolute && isValueInRange(marker.id, angle % 360, oldAngle % 360, 0, 360)) ||
-              (!marker.absolute && isValueInRange(marker.id, angle, oldAngle, 0, 360))) {
+            if ((!marker.final || (marker.final && final)) &&
+              ((marker.absolute && isValueInRange(marker.id, angle % 360, final ? undefined : oldAngle % 360, 0, 360)) ||
+              (!marker.absolute && isValueInRange(marker.id, angle, final ? undefined : oldAngle, 0, 360)))) {
               PandaBridge.send('triggerMarker', marker.id);
             }
           });
@@ -182,6 +177,10 @@
       function isValueInRange(testValue, currentValue, oldValue, minBorder, maxBorder) {
         var minvalue = Math.min(oldValue, currentValue);
         var maxvalue = Math.max(oldValue, currentValue);
+
+        if (oldValue == undefined) {
+          return testValue == currentValue;
+        }
 
         var isLooping = (Math.abs(oldValue - currentValue) > (maxBorder - minBorder) * 0.85) && oldValue != -1 && !isRotationBounds();
         return ((isLooping && ((testValue > maxvalue && testValue <= maxBorder) ||
