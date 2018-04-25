@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "system": {
+    "autoSave": false
+  },
+
+  "actions": [
+    {
+      "id": "clear",
+      "name": "Clear",
+      "locale_name": {
+        "fr_FR": "Effacer"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "id",
+      "name": "Identifier",
+      "locale_name": {
+        "fr_FR": "Identifiant"
+      },
+      "type": "String",
+      "value": "editor"
+    },
+    {
+      "id": "storage",
+      "name": "Local storage",
+      "locale_name": {
+        "fr_FR": "Stockage local"
+      },
+      "type": "Boolean",
+      "value": true
+    }
+  ]
+
+}

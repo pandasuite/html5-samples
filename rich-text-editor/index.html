@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rich Text Editor Component for PandaSuite</title>
+  <style type="text/css">
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    trix-editor {
+      height: 100%;
+      overflow: scroll;
+    }
+
+  </style>
+  <link rel="stylesheet" type="text/css" href="trix.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+  <script src="./panda-bridge-3.0.4.min.js"></script>
+  <script type="text/javascript" src="trix.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    var myBoard = null;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        myInit();
+      });
+
+      function myInit() {
+        var element = document.querySelector('trix-editor');
+
+        if (properties.storage) {
+          element.addEventListener('trix-change', function () {
+            localStorage.setItem(properties.id, JSON.stringify(element.editor));
+          });
+
+          try {
+            element.editor.loadJSON(JSON.parse(localStorage.getItem(properties.id) || '{"document":[]}'))
+          } catch (e) {}
+        }
+      }
+
+      /* Actions */
+
+      PandaBridge.listen('clear', function() {
+        var element = document.querySelector('trix-editor');
+
+        element.editor.loadJSON(JSON.parse('{"document":[]}'))
+      });
+
+    });
+
+  </script>
+</head>
+<body>
+  <trix-editor></trix-editor>
+</body>
+</html>
