@@ -1,0 +1,132 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "system": {
+    "autoSave": false
+  },
+
+  "events": [
+    {
+      "id": "onDrawingStart",
+      "name": "On drawing start",
+      "locale_name": {
+        "fr_FR": "Commencement du dessin"
+      }
+    },
+    {
+      "id": "onDrawingStop",
+      "name": "On drawing end",
+      "locale_name": {
+        "fr_FR": "Arrêt du dessin"
+      }
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "setColor",
+      "name": "Change color",
+      "locale_name": {
+        "fr_FR": "Changement couleur"
+      },
+      "params": [
+        { "id": "color", "name": "Color", "locale_name": {"fr_FR": "Couleur"}, "type": "String", "value": "#000000" }
+      ]
+    },
+    {
+      "id": "setSize",
+      "name": "Change size",
+      "locale_name": {
+        "fr_FR": "Changement taille"
+      },
+      "params": [
+        { "id": "size", "name": "Size", "locale_name": {"fr_FR": "Taille"}, "type": "Integer", "value": 10 }
+      ]
+    },
+    {
+      "id": "eraser",
+      "name": "Eraser mode",
+      "locale_name": {
+        "fr_FR": "Mode gomme"
+      }
+    },
+    {
+      "id": "pencil",
+      "name": "Pencil mode",
+      "locale_name": {
+        "fr_FR": "Mode crayon"
+      }
+    },
+    {
+      "id": "reset",
+      "name": "Reset",
+      "locale_name": {
+        "fr_FR": "Réinitialiser"
+      }
+    },
+    {
+      "id": "undo",
+      "name": "Undo",
+      "locale_name": {
+        "fr_FR": "Annuler"
+      }
+    },
+    {
+      "id": "redo",
+      "name": "Redo",
+      "locale_name": {
+        "fr_FR": "Refaire"
+      }
+    },
+    {
+      "id": "clearWebStorage",
+      "name": "Clear Web Storage",
+      "locale_name": {
+        "fr_FR": "Effacer le stockage Web"
+      }
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "color",
+      "name": "Pencil color",
+      "locale_name": {
+        "fr_FR": "Couleur du crayon"
+      },
+      "type": "String",
+      "value": "#000000"
+    },
+    {
+      "id": "size",
+      "name": "Pencil/Eraser size",
+      "locale_name": {
+        "fr_FR": "Taille du crayon/gomme"
+      },
+      "type": "Integer",
+      "value": 10
+    },
+    {
+      "id": "background",
+      "name": "Background color",
+      "locale_name": {
+        "fr_FR": "Couleur de fond"
+      },
+      "type": "String",
+      "activable": false,
+      "value": "#FFFFFF"
+    },
+    {
+      "id": "storage",
+      "name": "Local/Session storage",
+      "locale_name": {
+        "fr_FR": "Stockage Local/Session"
+      },
+      "type": "Boolean",
+      "activable": false,
+      "value": true
+    }
+  ]
+
+}

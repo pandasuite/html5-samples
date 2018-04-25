@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DrawingBoard Component for PandaSuite</title>
+  <style type="text/css">
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position-x: center;
+      background-position-y: center;
+    }
+
+    .drawing-board, .drawing-board * { -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; }
+    .drawing-board-utils-hidden { display: none !important; }
+    .drawing-board { position: relative; display: block; }
+    .drawing-board-canvas-wrapper { position: relative; margin: 0; border: 1px solid #ddd; }
+    .drawing-board-canvas { position: absolute; top: 0; left: 0; z-index: 10; width: auto; }
+    .drawing-board-canvas { cursor: crosshair; z-index: 20; }
+    .drawing-board-cursor { position: absolute; top: 0; left: 0; pointer-events: none; border-radius: 50%; background: #ccc; background: rgba(0, 0, 0, 0.2); z-index: 30; }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+  <script src="./panda-bridge-3.0.4.min.js"></script>
+  <script src="./jquery.min.js"></script>
+  <script src="drawingboard.nocontrol.js"></script>
+  <script type="text/javascript">
+
+    var properties = null;
+    var markers = null;
+
+    var myBoard = null;
+
+    PandaBridge.init(function() {
+
+      PandaBridge.onLoad(function(pandaData) {
+        properties = pandaData.properties;
+        markers = pandaData.markers;
+
+        if (document.readyState === 'complete') {
+          myInit();
+        } else {
+          document.addEventListener("DOMContentLoaded", myInit, false);
+        }
+      });
+
+      function myInit() {
+        var webStorage = false;
+
+        if (properties.storage != undefined) {
+          webStorage = properties.storage ? 'local' : 'session';
+        }
+
+        myBoard = new DrawingBoard.Board('container', {
+          background: properties.background || false,
+          color: properties.color || '#000000',
+          size: properties.size || 1,
+          webStorage: webStorage,
+        });
+
+        myBoard.ev.bind('board:startDrawing', function () {
+          PandaBridge.send('onDrawingStart');
+        });
+
+        myBoard.ev.bind('board:stopDrawing', function () {
+          PandaBridge.send('onDrawingStop');
+        });
+      }
+
+      /* Actions */
+
+      PandaBridge.listen('setColor', function(args) {
+        var props = args[0] || {};
+
+        if (myBoard) {
+          myBoard.setColor(props.color);
+        }
+      });
+
+      PandaBridge.listen('setSize', function(args) {
+        var props = args[0] || {};
+
+        if (myBoard) {
+          myBoard.ctx.lineWidth = props.size;
+        }
+      });
+
+      PandaBridge.listen('eraser', function() {
+        if (myBoard) {
+          myBoard.setMode('eraser');
+        }
+      });
+
+      PandaBridge.listen('pencil', function() {
+        if (myBoard) {
+          myBoard.setMode('pencil');
+        }
+      });
+
+      PandaBridge.listen('reset', function() {
+        if (myBoard) {
+          myBoard.reset({
+            background: true,
+            color: myBoard.color,
+            size: myBoard.ctx.lineWidth,
+            webStorage: myBoard.storage
+          });
+        }
+      });
+
+      PandaBridge.listen('undo', function() {
+        if (myBoard) {
+          myBoard.goBackInHistory();
+        }
+      });
+
+      PandaBridge.listen('redo', function() {
+        if (myBoard) {
+          myBoard.goForthInHistory();
+        }
+      });
+
+      PandaBridge.listen('clearWebStorage', function() {
+        if (myBoard) {
+          myBoard.clearWebStorage();
+        }
+      });
+
+    });
+
+  </script>
+</head>
+<body>
+  <div id="container">
+  </div>
+</body>
+</html>
