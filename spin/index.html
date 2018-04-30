@@ -2,7 +2,25 @@
 <html>
 <head>
   <title>Spin HTML Component for PandaSuite</title>
-  <link rel="stylesheet" href="css/style.css">
+  <style type="text/css">
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position-x: center;
+      background-position-y: center;
+    }
+  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
   <script src="./panda-bridge-3.0.4.min.js"></script>
   <script src="js/TweenLite.min.js"></script>
@@ -15,6 +33,7 @@
     var markers = null;
 
     var oldAngle = 0;
+    var tween;
 
     PandaBridge.init(function() {
 
@@ -97,7 +116,12 @@
 
         Draggable.get('#container').update();
 
-        var newAngle = Draggable.get('#container').rotation + props.angle;
+        var refRotation = Draggable.get('#container').rotation;
+        if (tween && tween.isActive() && tween.vars && tween.vars.css && tween.vars.css.rotation != undefined) {
+          refRotation = tween.vars.css.rotation;
+        }
+
+        var newAngle = refRotation + props.angle;
         if (isRotationBounds()) {
           newAngle = Math.min(Math.max(properties.minRotation, newAngle), properties.maxRotation);
         }
@@ -116,8 +140,6 @@
       });
 
       /* Private methods */
-
-      var tween;
 
       function rotate(angle, duration, fromSynchro) {
         var needToDispatchStart = true;
