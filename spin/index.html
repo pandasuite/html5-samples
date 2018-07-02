@@ -78,8 +78,13 @@
           snap: function (endValue) {
             if (properties.rotationSnap) {
               if (properties.isNearestSnap) {
-                return (Math.round(this.rotation / properties.rotationSnap) * properties.rotationSnap)
-                  + (properties.rotationSnap * ((endValue > this.rotation) ? 1 : -1));
+                var newRotation = Math.round(this.rotation / properties.rotationSnap) * properties.rotationSnap;
+                if (newRotation > endValue && endValue < this.rotation) {
+                  newRotation = newRotation - properties.rotationSnap;
+                } else if (newRotation < endValue && endValue > this.rotation) {
+                  newRotation = newRotation + properties.rotationSnap;
+                }
+                return newRotation;
               }
               return Math.round(endValue / properties.rotationSnap) * properties.rotationSnap;
             }
