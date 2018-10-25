@@ -27,18 +27,20 @@
     }
 
     function checkIfAllIsOk(sendIndividualState) {
-      var allIsOk = true;
+      var nbOk = 0;
 
       if (markers != null) {
         markers.forEach(function(marker) {
-          if (!getMarkerEvent(marker.id)) {
-            allIsOk = false;
-          } else if (sendIndividualState) {
-            PandaBridge.send(marker.id);
+          if (getMarkerEvent(marker.id)) {
+            nbOk = nbOk + 1;
+            if (sendIndividualState) {
+              PandaBridge.send(marker.id);
+            }
           }
         });
       }
-      if (allIsOk) {
+      if ((properties.nbLimit == -1 && (markers || []).length == nbOk) ||
+        nbOk == properties.nbLimit) {
         PandaBridge.send('allIsOk');
       }
     }
@@ -61,6 +63,14 @@
           storeMarkerEvent(pandaData.data.id);
           PandaBridge.send(pandaData.data.id);
           checkIfAllIsOk();
+        }
+      });
+
+      PandaBridge.listen('reset', function(args) {
+        if (properties.isLocalStorage && markers != null) {
+          markers.forEach(function(marker) {
+            localStorage.setItem(marker.id, false);
+          });
         }
       });
 

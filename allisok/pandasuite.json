@@ -17,6 +17,19 @@
       "id": "isLocalStorage",
       "type": "Boolean",
       "name": "Local storage"
+    },
+    {
+      "id": "nbLimit",
+      "type": "Integer",
+      "name": "Limit to",
+      "value": -1
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "reset",
+      "name": "Reset"
     }
   ]
 
