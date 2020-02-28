@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/style.css">
+
+		<script src="./js/panda-bridge-4.0.2.min.js"></script>
+		<script src="./js/lodash.min.js"></script>
+		<script type="text/javascript">
+
+			var properties = null;
+
+			PandaBridge.init(function() {
+				PandaBridge.onLoad(function(pandaData) {
+					properties = pandaData.properties;
+
+					if (properties && properties.debounce) {
+						document.getElementById('text').oninput = _.debounce(function () {
+							validate(false);
+						},
+						properties.debounceTime || 300,
+						{
+							maxWait: properties.debounceMaxWait || 1000
+						});
+					}
+				});
+
+				PandaBridge.listen('validate', function(event) {
+					validate();
+				});
+
+				function sendEvent(value) {
+					var data = {};
+
+					data[properties.key || 'value'] = value;
+					PandaBridge.send('sent', [data]);
+				}
+
+				function validate(erase = true) {
+					var text = document.getElementById('text').value;
+
+					sendEvent(document.getElementById('text').value);
+					if (erase) {
+						document.getElementById('text').value = "";
+					}
+				}
+			});
+
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<input type="text" name="username" id="text" />
+		</div>
+	</body>
+</html>

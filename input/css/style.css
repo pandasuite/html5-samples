@@ -1,0 +1,28 @@
+body {
+	margin: 0px;
+	background-color: transparent;
+}
+
+div#container {
+	width: 100%;
+	height: 100%;
+
+	padding: 10px;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+input[type=text], input[type=password] {
+	width: 100%;
+	height: 40px;
+	padding: 0px 15px;
+	margin-bottom: 20px;
+	color: #4f4f4f;
+	font-size: 18px;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}

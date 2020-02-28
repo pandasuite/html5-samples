@@ -1,0 +1,46 @@
+{
+  "version": "2.0.0",
+  "main": "index.html",
+
+  "events": [
+    {
+      "id": "sent",
+      "name": "On Input Sent"
+    }
+  ],
+
+  "properties": [
+    {
+      "id": "key",
+      "name": "Event Value Parameter Key",
+      "type": "String",
+      "value": "value"
+    },
+    {
+      "id": "debounce",
+      "name": "Live Validation",
+      "type": "Boolean",
+      "value": false
+    },
+    {
+      "id": "debounceTime",
+      "name": "Live Validation Delay (ms)",
+      "type": "Integer",
+      "value": 300
+    },
+    {
+      "id": "debounceMaxWait",
+      "name": "Live Validation Max Wait (ms)",
+      "type": "Integer",
+      "value": 1000
+    }
+  ],
+
+  "actions": [
+    {
+      "id": "validate",
+      "name": "Validate"
+    }
+  ]
+
+}
